@@ -26,8 +26,7 @@ exports.handler = function (context, event, callback) {
 
   const response = new Twilio.Response()
 	const headers = {
-		// 'Access-Control-Allow-Origin': '*', // change this to your client-side URL
-		'Access-Control-Allow-Origin': 'http://localhost:8000,https://marsidev-wathsup.deno.dev',
+		'Access-Control-Allow-Origin': context.ORIGIN, // change this for your client-side URL, or '*' to allow all origins, or create an ORIGIN variable in your .env file
 		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
 		'Access-Control-Allow-Headers': 'Content-Type',
 		'Content-Type': 'application/json'
