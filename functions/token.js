@@ -1,30 +1,29 @@
 exports.handler = function (context, event, callback) {
-  const twilioAccountSid = context.ACCOUNT_SID
+	const twilioAccountSid = context.ACCOUNT_SID
 	const twilioApiKey = context.API_KEY
 	const twilioApiSecret = context.API_SECRET
 	const twilioServiceSid = context.SERVICE_SID
-  const identity = event.identity
-  
-  const { AccessToken } = Twilio.jwt
-  const { VideoGrant, ChatGrant } = AccessToken
+	const identity = event.identity
+
+	const { AccessToken } = Twilio.jwt
+	const { ChatGrant, VideoGrant } = AccessToken
+
+	const videoGrant = new VideoGrant()
+	const chatGrant = new ChatGrant({
+		serviceSid: twilioServiceSid
+	})
 
 	const token = new AccessToken(
 		twilioAccountSid,
 		twilioApiKey,
 		twilioApiSecret,
 		{ identity }
-  )
-  
-	const videoGrant = new VideoGrant()
-  
-  const chatGrant = new ChatGrant({
-		serviceSid: twilioServiceSid
-  })
-  
-  token.addGrant(videoGrant)
-  token.addGrant(chatGrant)
+	)
 
-  const response = new Twilio.Response()
+	token.addGrant(chatGrant)
+	token.addGrant(videoGrant)
+
+	const response = new Twilio.Response()
 	const headers = {
 		'Access-Control-Allow-Origin': '*', // change this for your client-side URL
 		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
@@ -34,6 +33,7 @@ exports.handler = function (context, event, callback) {
 
 	response.setHeaders(headers)
 	response.setBody({
+		success: true,
 		accessToken: token.toJwt()
 	})
 
